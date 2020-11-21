@@ -15,7 +15,11 @@
     "@nuxt/typescript-runtime": "^2.0.0",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/composition-api": "^0.15.1",
+    "@nuxtjs/style-resources": "^1.0.0",
+    "@types/mapbox-gl": "^1.12.8",
+    "@zoov/design-system": "^0.2.15",
     "core-js": "^3.6.5",
+    "mapbox-gl": "^1.13.0",
     "nuxt": "^2.14.6"
   },
   "devDependencies": {
@@ -29,10 +33,20 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.5.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.10.0",
     "eslint-plugin-nuxt": "^1.0.0",
     "jest": "^26.5.0",
+    "pug": "^3.0.0",
+    "pug-plain-loader": "^1.0.0",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^4.3.0",
     "ts-jest": "^26.4.1",
     "vue-jest": "^3.0.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
