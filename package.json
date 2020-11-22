@@ -16,6 +16,7 @@
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/composition-api": "^0.15.1",
     "@nuxtjs/style-resources": "^1.0.0",
+    "@types/geojson": "^7946.0.7",
     "@types/mapbox-gl": "^1.12.8",
     "@zoov/design-system": "^0.2.15",
     "core-js": "^3.6.5",

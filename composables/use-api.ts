@@ -1,53 +1,64 @@
-import { reactive, toRefs, SetupContext } from "@nuxtjs/composition-api";
-import axios from "axios";
+import { reactive, toRefs, SetupContext } from "@nuxtjs/composition-api"
+import axios from "axios"
+import { Bike } from "../types/bike"
 
 interface Options {
   ctx: SetupContext;
 }
 
 type globalState = {
-  articles: object | null;
-};
+  bikes: object | null;
+  bikesGeoPoints: object | null;
+}
 
-export default function usePosts({ ctx }: Options) {
-  // Setting up the endpoint
+export default function useApi({ ctx }: Options) {
   const apiState: any = reactive({
     response: [],
     error: null,
     fetching: false
-  });
+  })
 
   const globalState: globalState = reactive({
-    articles: {},
-    article: [],
-    categories: []
-  });
+    bikes: {},
+    bikesGeoPoints: {}
+  })
 
-  const Cookie = process.client ? require("js-cookie") : undefined;
-  const cookieLang = process.client
-    ? Cookie.get("i18n_redirected")
-      ? Cookie.get("i18n_redirected")
-      : null
-    : null;
-
-  const fetchArticlesList = async (subtype: string = "posts") => {
-    apiState.fetching = true;
+  const fetchBikes = async () => {
+    apiState.fetching = true
 
     const { data } = await axios.get(
-      `${process.env.NUXT_ENV_WORDPRESS_API_URL}/wp-json/wp/v2/${subtype}?orderby=date&per_page=10&_embed`,
-      {
-        params: {
-          _embed: true,
-          lang: cookieLang
+      `https://jsonbox.io/${process.env.NUXT_ENV_BOX_ID}`
+    )
+    globalState.bikes = data
+
+    const service_status_txt = ['free', 'booked', 'in use']
+
+    const dataPoints = data.map((bike: Bike) => {
+      let dataPoint = {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [0, 0] // long,lat : sadly not an object
+        },
+        properties: {
+          title: "",
+          description: ""
         }
       }
-    );
-    globalState.articles = data;
-  };
+
+      dataPoint.geometry.coordinates = bike.location.coordinates
+      dataPoint.properties.title = bike.serial_number
+      dataPoint.properties.description = `Status : ${service_status_txt[bike.service_status - 1]}  - ${bike.battery_level} % `
+
+      return dataPoint
+    })
+
+    globalState.bikesGeoPoints = dataPoints
+  }
 
   return {
     ...toRefs(apiState),
     ...toRefs(globalState),
-    fetchArticlesList
-  };
+    fetchBikes
+  }
 }
