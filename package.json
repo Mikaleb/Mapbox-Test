@@ -21,7 +21,8 @@
     "@zoov/design-system": "^0.2.15",
     "core-js": "^3.6.5",
     "mapbox-gl": "^1.13.0",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "vue-mapbox": "^0.4.1"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",

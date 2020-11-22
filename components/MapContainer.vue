@@ -15,6 +15,7 @@ export default defineComponent({
       : ''
     const { bikes, bikesGeoPoints, fetchBikes } = useApi({ ctx })
     let map: any = null
+    let bike: any = null
 
     const createMap = () => {
       map = new mapboxgl.Map({
@@ -35,10 +36,16 @@ export default defineComponent({
       geojson.features.map((arr: any) => {
         arr.map((marker: any) => {
           let el = document.createElement('div')
-          el.className = 'marker'
+
+          if (Array.isArray(bikes.value)) {
+            bike = bikes.value.find(
+              (bike: any) => bike.serial_number === marker.properties.title
+            )
+          }
+
+          el.className = `marker status${bike.service_status}`
 
           if (marker) {
-            console.log('addMarkers -> marker', marker)
             new mapboxgl.Marker(el)
               .setLngLat(marker.geometry.coordinates)
               .setPopup(
@@ -80,8 +87,11 @@ export default defineComponent({
 }
 
 .marker {
-  background-image: url('/zoov-bike.svg');
-  background-size: cover;
+  mask-image: url('/bike.svg');
+  -webkit-mask-image: url('/bike.svg');
+  mask: url('/bike.svg');
+  mask-size: cover;
+  background-color: black;
   width: 64px;
   height: 64px;
   cursor: pointer;
@@ -95,5 +105,15 @@ export default defineComponent({
   text-align: center;
   font-family: 'Open Sans', sans-serif;
   color: black;
+}
+
+.status1 {
+  background-color: green;
+}
+.status2 {
+  background-color: orange;
+}
+.status3 {
+  background-color: red;
 }
 </style>

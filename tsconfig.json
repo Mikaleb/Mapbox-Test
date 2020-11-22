@@ -23,6 +23,7 @@
         "./*"
       ]
     },
+    "typeRoots": ["./types", "types", "./node_modules/@types"],
     "types": [
       "@types/node",
       "@nuxt/types"
@@ -30,6 +31,7 @@
   },
   "exclude": [
     "node_modules",
+    "typings",
     ".nuxt",
     "dist"
   ]

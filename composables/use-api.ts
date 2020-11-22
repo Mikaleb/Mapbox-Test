@@ -7,8 +7,9 @@ interface Options {
 }
 
 type globalState = {
-  bikes: object | null;
+  bikes: object;
   bikesGeoPoints: object | null;
+  serviceStatusTxt: any;
 }
 
 export default function useApi({ ctx }: Options) {
@@ -20,8 +21,11 @@ export default function useApi({ ctx }: Options) {
 
   const globalState: globalState = reactive({
     bikes: {},
-    bikesGeoPoints: {}
+    bikesGeoPoints: {},
+    serviceStatusTxt: ['free', 'booked', 'in use']
   })
+
+
 
   const fetchBikes = async () => {
     apiState.fetching = true
@@ -30,8 +34,8 @@ export default function useApi({ ctx }: Options) {
       `https://jsonbox.io/${process.env.NUXT_ENV_BOX_ID}`
     )
     globalState.bikes = data
+    apiState.fetching = false
 
-    const service_status_txt = ['free', 'booked', 'in use']
 
     const dataPoints = data.map((bike: Bike) => {
       let dataPoint = {
@@ -48,7 +52,7 @@ export default function useApi({ ctx }: Options) {
 
       dataPoint.geometry.coordinates = bike.location.coordinates
       dataPoint.properties.title = bike.serial_number
-      dataPoint.properties.description = `Status : ${service_status_txt[bike.service_status - 1]}  - ${bike.battery_level} % `
+      dataPoint.properties.description = `Status : ${globalState.serviceStatusTxt[bike.service_status - 1]}  - ${bike.battery_level} % `
 
       return dataPoint
     })
@@ -59,6 +63,7 @@ export default function useApi({ ctx }: Options) {
   return {
     ...toRefs(apiState),
     ...toRefs(globalState),
-    fetchBikes
+    fetchBikes,
+
   }
 }
