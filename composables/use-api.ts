@@ -60,10 +60,59 @@ export default function useApi({ ctx }: Options) {
     globalState.bikesGeoPoints = dataPoints
   }
 
+  const reloadPage = (data:any) => {
+    if(data) window.location.reload(true)
+  }
+
+  const updateBike = async (oldData:any, newData: any) => {
+
+    const serviceStatus = () => {
+      if (newData.service_status === 0) {
+        return 1
+      }
+      if(newData.service_status === oldData.service_status) return oldData.service_status
+      return globalState.serviceStatusTxt.indexOf(newData.service_status) + 1
+    }
+
+    console.log(serviceStatus())
+
+    const { data, status } = await axios.put(`https://jsonbox.io/${process.env.NUXT_ENV_BOX_ID}/${oldData._id}`, {
+      ...newData,
+      service_status: serviceStatus()
+    })
+    reloadPage(data)
+
+    return data
+  }
+
+
+  const addBike = async (oldData:any, newData: any) => {
+
+    const { data, status } = await axios.post(`https://jsonbox.io/${process.env.NUXT_ENV_BOX_ID}`, {
+      ...newData,
+      service_status: globalState.serviceStatusTxt.indexOf(newData.service_status) + 1
+    })
+
+    reloadPage(data)
+
+    return data
+  }
+
+  const deleteBike = async (oldData:any, newData: any) => {
+
+    const { data, status } = await axios.delete(`https://jsonbox.io/${process.env.NUXT_ENV_BOX_ID}/${oldData._id}`)
+    reloadPage(data)
+
+
+    return data
+  }
+
   return {
     ...toRefs(apiState),
     ...toRefs(globalState),
     fetchBikes,
-
+    addBike,
+    updateBike,
+    deleteBike
   }
 }
